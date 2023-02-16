@@ -2,6 +2,8 @@ package com.example.if_else.Controllers;
 
 
 import com.example.if_else.Models.Account;
+import com.example.if_else.Models.Location;
+import com.example.if_else.Servises.LocationServic;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("locations")
 public class LocationController {
 
+    private final LocationServic locationServic;
+
+    public LocationController(LocationServic locationServices) {
+        this.locationServic = locationServices;
+    }
+
     @GetMapping("{pointId}")
-    public ResponseEntity<Account> show(@PathVariable("pointId") Integer pointId) {
-        return locationService.getLacateById(pointId);
+    public ResponseEntity<Location> show(@PathVariable("pointId") Integer pointId) {
+        return locationServic.getLacateById(pointId);
     }
 }
