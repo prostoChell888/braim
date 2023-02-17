@@ -4,6 +4,7 @@ package com.example.if_else.Models;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,6 +24,5 @@ public class Location {
 
     @Column(name = "longitude")
     private Double longitude;
-
 
 }

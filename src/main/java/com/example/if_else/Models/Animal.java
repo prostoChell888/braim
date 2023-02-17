@@ -3,6 +3,8 @@ package com.example.if_else.Models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -18,42 +20,56 @@ public class Animal {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    //Рзаобратся со связью
+
     @ManyToOne
-    @JoinColumn(name = "animal_type_id")
+    @JoinColumn(name = "animal_type_id",
+            referencedColumnName = "id")
     private AnimalType animalType;
 
+    @Column(name = "weight")
     private Float weight;
 
+    @Column(name = "length")
     private Float length;
 
+    @Column(name = "height")
     private Float height;
 
+    @Column(name = "gender")
     private String gender;
 
+    @Column(name = "life_status")
     private String lifeStatus;
 
-   // private chippingDateTime;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "chipping_date_time")
+    @NotNull
+    private Date chippingDateTime;
+
 
     @ManyToOne
-    @JoinColumn(name = "chipper_id_id")
+    @JoinColumn(name = "chipper_id",
+            referencedColumnName = "id")
     private  Account chipperId;
 
-    @ManyToOne
-    @JoinColumn(name = "chipping_location_id_id")
+
+    @OneToOne
+    @JoinColumn(name = "chipping_location_id",
+            referencedColumnName = "id")
     private Location chippingLocationId;
 
-    //Доделать!!!!!!!!!
-    @ManyToMany
+
+    @OneToMany
+    @JoinColumn(name = "visited_location_id",
+            referencedColumnName = "id")
     private List<Location> visitedLocations;
 
 
-
-  //  private deathDateTime;
-
-
-
-
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "death_date_time")
+    @NotNull
+    private Date deathDateTime;
 
 
 }
