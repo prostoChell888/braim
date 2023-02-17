@@ -15,10 +15,5 @@ public interface AccountRepository extends JpaRepository<Account, Integer> {
     Optional<Account> findById(Integer id);
 
 
-    @Query()
-    List<Account> findPeopleByParametrs(String firstName,
-                                        String lastName,
-                                        String email,
-                                        Integer from,
-                                        Integer size);
+
 }

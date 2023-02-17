@@ -14,10 +14,11 @@ import java.util.Optional;
 @Service
 public class AccountService {
 
-    @Autowired
+
     private final EntityManager entityManager;
     private final AccountRepository accountRepository;
 
+    @Autowired
     public AccountService(EntityManager entityManager, AccountRepository accountRepository) {
         this.entityManager = entityManager;
         this.accountRepository = accountRepository;
@@ -36,7 +37,6 @@ public class AccountService {
         } else {
             return ResponseEntity.status(404).body(null);
         }
-
     }
 
     public ResponseEntity<List<Account>> findAccounts(String firstName,

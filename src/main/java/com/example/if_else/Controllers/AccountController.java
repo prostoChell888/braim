@@ -10,13 +10,15 @@ import java.util.List;
 
 @RestController
 @RequestMapping("accounts")
-public class AccountContrller {
+
+public class AccountController {
 
     private final AccountService accountService;
 
-    public AccountContrller(AccountService accountService) {
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
+
 
     @GetMapping("{accountId}")
     public ResponseEntity<Account> show(@PathVariable("accountId") Integer accountId) {
