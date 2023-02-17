@@ -19,7 +19,7 @@ public class LocationServic {
     }
 
 
-    public ResponseEntity<Location> getLacateById(Integer pointId) {
+    public ResponseEntity<Location> getLacateById(Long pointId) {
 
         if (pointId == null || pointId < 0) {
             return ResponseEntity.status(400).body(null);

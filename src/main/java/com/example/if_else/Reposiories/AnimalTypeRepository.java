@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AnimalTypeRepository
-        extends JpaRepository<AnimalType, Integer> {
+        extends JpaRepository<AnimalType, Long> {
 
 
 }

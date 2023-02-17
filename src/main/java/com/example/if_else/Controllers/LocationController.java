@@ -21,7 +21,7 @@ public class LocationController {
     }
 
     @GetMapping("{pointId}")
-    public ResponseEntity<Location> show(@PathVariable("pointId") Integer pointId) {
+    public ResponseEntity<Location> show(@PathVariable("pointId") Long pointId) {
         return locationServic.getLacateById(pointId);
     }
 }

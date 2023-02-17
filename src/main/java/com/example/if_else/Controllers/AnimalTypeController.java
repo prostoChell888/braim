@@ -21,7 +21,7 @@ public class AnimalTypeController {
     }
 
     @GetMapping("{typeId}")
-    public ResponseEntity<AnimalType> show(@PathVariable("typeId") Integer typeId) {
+    public ResponseEntity<AnimalType> show(@PathVariable("typeId") Long typeId) {
         return animalTypeService.getAnimalTypeById(typeId);
     }
 
