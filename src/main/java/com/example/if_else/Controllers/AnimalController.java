@@ -2,6 +2,7 @@ package com.example.if_else.Controllers;
 
 
 import com.example.if_else.Models.Animal;
+import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -49,7 +50,19 @@ public class AnimalController {
 
 
         return animalService.findAnimals(parameters);
+    }
 
+
+    @PutMapping("{animalId}/locations")
+    public ResponseEntity<List<VisitsLocation>> getLocation(@PathVariable("animalId") Long animalId,
+                                                            @RequestParam(required = false)
+                                             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date startDateTime,
+                                                            @RequestParam(required = false)
+                                             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date endDateTime,
+                                                            @RequestParam(defaultValue = "0") Integer from,
+                                                            @RequestParam(defaultValue = "10") Integer size) {
+
+        return animalService.getLocation(animalId, startDateTime, endDateTime, from, size);
     }
 
 }

@@ -63,7 +63,7 @@ public class Animal {
     @OneToMany
     @JoinColumn(name = "visited_location_id",
             referencedColumnName = "id")
-    private List<Location> visitedLocations;
+    private List<VisitsLocation> visitedLocations;
 
 
     @Temporal(TemporalType.TIMESTAMP)
