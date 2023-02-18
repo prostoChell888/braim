@@ -58,12 +58,10 @@ public class AccountService {
         query.setParameter("firstName", firstName);
         query.setParameter("lastName", lastName);
         query.setParameter("email", email);
-        query.setFirstResult(10);
-        query.setMaxResults(10);
+        query.setFirstResult(from);
+        query.setMaxResults(size);
         List<Account> accounts = query.getResultList();
 
         return ResponseEntity.status(200).body(accounts);
-
-
     }
 }
