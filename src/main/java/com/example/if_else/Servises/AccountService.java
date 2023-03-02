@@ -59,12 +59,7 @@ public class AccountService implements UserDetailsService {
         if (param.getSize() <= 0 || param.getFrom() < 0) {
             return ResponseEntity.status(400).body(null);
         }
-        if (param.getEmail() != null)
-            param.setEmail(param.getEmail().toUpperCase());
-        if (param.getFirstName() != null)
-            param.setFirstName(param.getFirstName().toUpperCase());
-        if (param.getLastName() != null)
-            param.setLastName(param.getLastName().toUpperCase());
+
 
         Query query = entityManager.createQuery(
                 "SELECT accounts " +

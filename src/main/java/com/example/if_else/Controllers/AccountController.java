@@ -11,7 +11,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("accounts")
-
 public class AccountController {
 
     private final AccountService accountService;

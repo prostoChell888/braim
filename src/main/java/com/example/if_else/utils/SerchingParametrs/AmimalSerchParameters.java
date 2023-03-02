@@ -7,8 +7,8 @@ import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Data
+@Getter
+@Setter
 public class AmimalSerchParameters {
     private Long animalId;
     private Date startDateTime;
