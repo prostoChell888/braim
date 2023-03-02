@@ -18,48 +18,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 @SpringBootApplication
-public class IfElseApplication extends WebSecurityConfigurerAdapter {
+public class IfElseApplication  {
 
     public static void main(String[] args) {
         SpringApplication.run(IfElseApplication.class, args);
     }
 
-    @Autowired
-    private AccountService userService;
-
-    @Bean
-    PasswordEncoder bcryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(daoAuthenticationProvider());
-    }
-
-    @Bean
-    DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-
-        daoAuthenticationProvider.setPasswordEncoder(bcryptPasswordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(this.userService);
-
-        return daoAuthenticationProvider;
-    }
-
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        //todo
-        http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/registration").permitAll()
-                .antMatchers("/accounts/{accountId}").permitAll()
-//                .antMatchers("/animals/**").authenticated()
-//                .antMatchers("/locations/**").authenticated()
-//                .antMatchers("/locations/**").authenticated()
-                .anyRequest().authenticated()
-                .and().httpBasic();
-    }
 
 }
