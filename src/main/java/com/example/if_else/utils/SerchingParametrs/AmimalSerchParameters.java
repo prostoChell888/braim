@@ -8,12 +8,14 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Data
 public class AmimalSerchParameters {
-    public Date startDateTime;
-    public Date endDateTime;
-    public Long chippingLocationId;
-    public String lifeStatus;
-    public String gender;
-    public Integer from;
-    public Integer size;
+    private Long animalId;
+    private Date startDateTime;
+    private Date endDateTime;
+    private Long chippingLocationId;
+    private String lifeStatus;
+    private String gender;
+    private Integer from = 0;
+    private Integer size = 10;
 }

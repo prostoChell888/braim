@@ -23,46 +23,26 @@ public class AnimalController {
         this.animalService = animalService;
     }
 
+    //todo добавить валидацию
     @GetMapping("{animalId}")
     public ResponseEntity<Animal> show(@PathVariable("animalId") Long animalId) {
         return animalService.getAnimalById(animalId);
     }
 
-    @GetMapping("search")
-    public ResponseEntity<List<Animal>> findAnimals(
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date startDateTime,
-            @RequestParam(required = false) @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date endDateTime,
-            @RequestParam(required = false) Long chippingLocationId,
-            @RequestParam(required = false) String lifeStatus,
-            @RequestParam(required = false) String gender,
-            @RequestParam(defaultValue = "0") Integer from,
-            @RequestParam(defaultValue = "10") Integer size
-    ) {
-        AmimalSerchParameters parameters = AmimalSerchParameters.builder().
-                        startDateTime(startDateTime).
-                        endDateTime(endDateTime).
-                        chippingLocationId(chippingLocationId).
-                        lifeStatus(lifeStatus).
-                        gender(gender).
-                        from(from).
-                        size(size).
-                        build();
 
+    //todo добавить валидацию
+    @GetMapping("search")
+    public ResponseEntity<List<Animal>> findAnimals(AmimalSerchParameters parameters) {
 
         return animalService.findAnimals(parameters);
     }
 
-
-    @PutMapping("{animalId}/locations")
+    //todo добавить проекции(переделать классы)
+    @GetMapping("{animalId}/locations")
     public ResponseEntity<List<VisitsLocation>> getLocation(@PathVariable("animalId") Long animalId,
-                                                            @RequestParam(required = false)
-                                             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date startDateTime,
-                                                            @RequestParam(required = false)
-                                             @DateTimeFormat(pattern="yyyy-MM-dd'T'HH:mm:ss.SSSX") Date endDateTime,
-                                                            @RequestParam(defaultValue = "0") Integer from,
-                                                            @RequestParam(defaultValue = "10") Integer size) {
+                                                            AmimalSerchParameters param) {
 
-        return animalService.getLocation(animalId, startDateTime, endDateTime, from, size);
+        return animalService.getLocation(animalId, param);
     }
 
 }

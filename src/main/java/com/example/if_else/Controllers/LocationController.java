@@ -20,6 +20,7 @@ public class LocationController {
         this.locationServic = locationServices;
     }
 
+    //todo проверить на корректность
     @GetMapping("{pointId}")
     public ResponseEntity<Location> show(@PathVariable("pointId") Long pointId) {
         return locationServic.getLacateById(pointId);

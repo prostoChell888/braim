@@ -21,7 +21,7 @@ public class AnimalTypeService {
 
     public ResponseEntity<AnimalType> getAnimalTypeById(Long typeId) {
 
-        if (typeId == null || typeId < 0) {
+        if (typeId == null || typeId <= 0) {
             return ResponseEntity.status(400).body(null);
         }
 

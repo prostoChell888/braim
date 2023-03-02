@@ -3,6 +3,7 @@ package com.example.if_else.Controllers;
 
 import com.example.if_else.Servises.AccountService;
 import com.example.if_else.Models.Account;
+import com.example.if_else.utils.SerchingParametrs.AcountSerchParametrs;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,21 +20,24 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+    //todo отладка
+    @GetMapping("c")
+    public String check() {
+        return "ку!!!";
+    }
 
+
+    //todo добавить валидацию
     @GetMapping("{accountId}")
     public ResponseEntity<Account> show(@PathVariable("accountId") Integer accountId) {
         return accountService.getUserById(accountId);
     }
 
+
+    //todo добавить валидацию
     @GetMapping("search")
-    public ResponseEntity<List<Account>> findAccounts
-            (@RequestParam(required = false) String firstName,
-             @RequestParam(required = false) String lastName,
-             @RequestParam(required = false) String email,
-             @RequestParam(defaultValue = "0") Integer from,
-             @RequestParam(defaultValue = "10") Integer size) {
+    public ResponseEntity<List<Account>> findAccounts(AcountSerchParametrs param) {
 
-        return accountService.findAccounts(firstName, lastName, email, from, size);
-
+        return accountService.findAccounts(param);
     }
 }
