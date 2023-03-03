@@ -1,7 +1,12 @@
 package com.example.if_else.utils.SerchingParametrs;
 
+import com.example.if_else.enums.Gender;
+import com.example.if_else.enums.LifeStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 
+import javax.validation.constraints.Min;
+import java.sql.Timestamp;
 import java.util.Date;
 
 
@@ -10,12 +15,18 @@ import java.util.Date;
 @Getter
 @Setter
 public class AmimalSerchParameters {
-    private Long animalId;
-    private Date startDateTime;
-    private Date endDateTime;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mmX")
+    private Timestamp startDateTime;
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mmX")
+    private Timestamp endDateTime;
+    @Min(value = 1)
+    private Long chipperId;
+    @Min(value = 1)
     private Long chippingLocationId;
-    private String lifeStatus;
-    private String gender;
+    private LifeStatus lifeStatus;
+    private Gender gender;
+    @Min(value = 0)
     private Integer from = 0;
+    @Min(value = 1)
     private Integer size = 10;
 }

@@ -56,9 +56,7 @@ public class AccountService implements UserDetailsService {
     }
 
     public ResponseEntity<List<Account>> findAccounts(@Valid AcountSerchParametrs param) {
-        if (param.getSize() <= 0 || param.getFrom() < 0) {
-            return ResponseEntity.status(400).body(null);
-        }
+
 
         Query query = entityManager.createQuery(
                 "SELECT accounts " +
@@ -74,7 +72,7 @@ public class AccountService implements UserDetailsService {
         query.setMaxResults(param.getSize());
         List<Account> accounts = query.getResultList();
 
-        return ResponseEntity.status(200).body(accounts);
+        return ResponseEntity.ok().body(accounts);
     }
 
     public ResponseEntity<Account> addAccount(@Valid Account account) {

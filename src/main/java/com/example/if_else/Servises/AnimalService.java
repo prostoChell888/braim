@@ -45,18 +45,7 @@ public class AnimalService {
     }
 
     public ResponseEntity<List<Animal>> findAnimals(@Valid AmimalSerchParameters param) {
-        if (param.getSize() <= 0 || param.getFrom() < 0) {
-            return ResponseEntity.status(400).body(null);
-        }
 
-        if ("LIVE".equals(param.getLifeStatus()) || "DEAD".equals(param.getLifeStatus())) {
-            return ResponseEntity.status(400).body(null);
-        }
-
-        if ("MALE".equals(param.getGender()) || "FEMALE".equals(param.getGender())
-                || "OTHER".equals(param.getGender())) {
-            return ResponseEntity.status(400).body(null);
-        }
         List<Animal> animals = getAnimals(param);
 
         return ResponseEntity.status(200).body(animals);
@@ -71,7 +60,7 @@ public class AnimalService {
                 param.getLifeStatus(),
                 param.getGender());
 
-
+//todo переделать на более эфективную выборку
         return res.stream().
                 skip(param.getFrom()).
                 limit(param.getSize()).

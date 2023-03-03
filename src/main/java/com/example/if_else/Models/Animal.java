@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -73,7 +74,7 @@ public class Animal {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "death_date_time")
     @NotNull
-    private Date deathDateTime;
+    private Timestamp deathDateTime;
 
 
 }
