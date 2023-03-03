@@ -1,5 +1,7 @@
 package com.example.if_else.Models;
 
+import com.example.if_else.enums.Gender;
+import com.example.if_else.enums.LifeStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -36,10 +38,12 @@ public class Animal {
     private Float height;
 
     @Column(name = "gender")
-    private String gender;
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     @Column(name = "life_status")
-    private String lifeStatus;
+    @Enumerated(EnumType.STRING)
+    private LifeStatus lifeStatus;
 
 
     @Temporal(TemporalType.TIMESTAMP)

@@ -40,7 +40,7 @@ public class AccountService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
-    public ResponseEntity<Account> getUserById(Integer accountId) {
+    public ResponseEntity<Account> getUserById(@Valid Integer accountId) {
 
         if (accountId == null || accountId <= 0) {
             return ResponseEntity.status(400).body(null);
@@ -55,11 +55,10 @@ public class AccountService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<List<Account>> findAccounts(AcountSerchParametrs param) {
+    public ResponseEntity<List<Account>> findAccounts(@Valid AcountSerchParametrs param) {
         if (param.getSize() <= 0 || param.getFrom() < 0) {
             return ResponseEntity.status(400).body(null);
         }
-
 
         Query query = entityManager.createQuery(
                 "SELECT accounts " +
@@ -78,7 +77,6 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.status(200).body(accounts);
     }
 
-    //todo сделать обработку перед сохранением
     public ResponseEntity<Account> addAccount(@Valid Account account) {
         Optional<Account> acc = accountRepository.findByEmail(account.getEmail());
 
