@@ -36,8 +36,5 @@ public class AccountController {
         return accountService.findAccounts(param);
     }
 
-    @PutMapping("{accountId}")
-    public ResponseEntity<Account> update(@PathVariable("accountId") Integer accountId, Account account) {
-        return accountService.updateUserById(accountId, account);
-    }
+
 }

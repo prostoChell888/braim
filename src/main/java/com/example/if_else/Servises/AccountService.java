@@ -58,20 +58,6 @@ public class AccountService implements UserDetailsService {
     public ResponseEntity<List<Account>> findAccounts(@Valid AcountSerchParametrs param) {
 
 
-//        Query query = entityManager.createQuery(
-//                "SELECT accounts " +
-//                        "FROM Account accounts " +
-//                        "WHERE (:firstName is null or accounts.firstName LIKE '%':firstName'%') " +
-//                        "AND (:lastName is null or accounts.lastName LIKE '%':lastName'%' ) " +
-//                        "AND (:email is null or accounts.email  LIKE '%':email'%' )");
-//
-//        query.setParameter("firstName", param.getFirstName());
-//        query.setParameter("lastName", param.getLastName());
-//        query.setParameter("email", param.getEmail());
-//        query.setFirstResult(param.getFrom());
-//        query.setMaxResults(param.getSize());
-//        List<Account> accounts = query.getResultList();
-
         List<Account> accounts = accountRepository.
                 findAccByParams(param.getFirstName(),
                         param.getLastName(),
