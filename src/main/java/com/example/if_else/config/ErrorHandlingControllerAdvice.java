@@ -4,16 +4,13 @@ import com.example.if_else.utils.errors.ValidationErrorResponse;
 import com.example.if_else.utils.errors.Violation;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 import java.util.stream.Collectors;
 //todo разобратся
-@ControllerAdvice
+@RestControllerAdvice
 public class ErrorHandlingControllerAdvice {
 
     @ResponseBody

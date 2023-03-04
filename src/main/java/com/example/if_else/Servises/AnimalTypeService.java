@@ -6,10 +6,15 @@ import com.example.if_else.Models.AnimalType;
 import com.example.if_else.Reposiories.AnimalTypeRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
+@Validated
 public class AnimalTypeService {
 
     private final AnimalTypeRepository animalTypeRepository;
@@ -19,13 +24,9 @@ public class AnimalTypeService {
     }
 
 
-    public ResponseEntity<AnimalType> getAnimalTypeById(Long typeId) {
+    public ResponseEntity<AnimalType> getAnimalTypeById(@Valid @Min(1) @NotNull Long typeId) {
 
-        if (typeId == null || typeId <= 0) {
-            return ResponseEntity.status(400).body(null);
-        }
-
-        Optional<AnimalType> animalType = animalTypeRepository.findById(typeId);
+         Optional<AnimalType> animalType = animalTypeRepository.findById(typeId);
 
         if (animalType.isPresent()) {
             return ResponseEntity.status(200).body(animalType.get());

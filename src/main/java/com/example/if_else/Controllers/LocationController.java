@@ -1,7 +1,6 @@
 package com.example.if_else.Controllers;
 
 
-import com.example.if_else.Models.Account;
 import com.example.if_else.Models.Location;
 import com.example.if_else.Servises.LocationServic;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +22,6 @@ public class LocationController {
     //todo проверить на корректность
     @GetMapping("{pointId}")
     public ResponseEntity<Location> show(@PathVariable("pointId") Long pointId) {
-        return locationServic.getLacateById(pointId);
+        return locationServic.getLacattionById(pointId);
     }
 }

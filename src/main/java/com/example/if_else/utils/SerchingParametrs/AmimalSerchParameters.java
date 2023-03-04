@@ -16,9 +16,9 @@ import java.util.Date;
 @Setter
 public class AmimalSerchParameters {
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mmX")
-    private Timestamp startDateTime;
+    private Date startDateTime;
     @JsonFormat(pattern="yyyy-MM-dd'T'HH:mmX")
-    private Timestamp endDateTime;
+    private Date endDateTime;
     @Min(value = 1)
     private Long chipperId;
     @Min(value = 1)

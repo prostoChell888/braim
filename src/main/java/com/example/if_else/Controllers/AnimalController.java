@@ -5,11 +5,9 @@ import com.example.if_else.Models.Animal;
 import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 @RestController

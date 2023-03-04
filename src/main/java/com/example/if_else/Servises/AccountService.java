@@ -5,6 +5,8 @@ import com.example.if_else.Models.Account;
 import com.example.if_else.security.UserDetailsPrincipal;
 import com.example.if_else.utils.SerchingParametrs.AcountSerchParametrs;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,11 +44,7 @@ public class AccountService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
-    public ResponseEntity<Account> getUserById(@Valid Integer accountId) {
-
-        if (accountId == null || accountId <= 0) {
-            return ResponseEntity.status(400).body(null);
-        }
+    public ResponseEntity<Account> getUserById(@Valid @Min(1) @NotNull Integer accountId) {
 
         Optional<Account> account = accountRepository.findById(accountId);
 
@@ -58,19 +58,27 @@ public class AccountService implements UserDetailsService {
     public ResponseEntity<List<Account>> findAccounts(@Valid AcountSerchParametrs param) {
 
 
-        Query query = entityManager.createQuery(
-                "SELECT accounts " +
-                        "FROM Account accounts " +
-                        "WHERE (:firstName is null or accounts.firstName LIKE '%:firstName%') " +
-                        "AND (:lastName is null or accounts.lastName LIKE '%:lastName%' ) " +
-                        "AND (:email is null or accounts.email  LIKE '%:email%' )");
+//        Query query = entityManager.createQuery(
+//                "SELECT accounts " +
+//                        "FROM Account accounts " +
+//                        "WHERE (:firstName is null or accounts.firstName LIKE '%':firstName'%') " +
+//                        "AND (:lastName is null or accounts.lastName LIKE '%':lastName'%' ) " +
+//                        "AND (:email is null or accounts.email  LIKE '%':email'%' )");
+//
+//        query.setParameter("firstName", param.getFirstName());
+//        query.setParameter("lastName", param.getLastName());
+//        query.setParameter("email", param.getEmail());
+//        query.setFirstResult(param.getFrom());
+//        query.setMaxResults(param.getSize());
+//        List<Account> accounts = query.getResultList();
 
-        query.setParameter("firstName", param.getFirstName());
-        query.setParameter("lastName", param.getLastName());
-        query.setParameter("email", param.getEmail());
-        query.setFirstResult(param.getFrom());
-        query.setMaxResults(param.getSize());
-        List<Account> accounts = query.getResultList();
+        List<Account> accounts = accountRepository.
+                findAccByParams(param.getFirstName(),
+                        param.getLastName(),
+                        param.getEmail(),
+                        param.getSize(),
+                        param.getFrom());
+
 
         return ResponseEntity.ok().body(accounts);
     }

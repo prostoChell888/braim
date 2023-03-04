@@ -21,8 +21,8 @@ public interface AnimalRepository extends JpaRepository<Animal, Long> {
             "AND (:chippingLocationId is null or animals.chippingLocationId.id = :chippingLocationId) " +
             "AND (:lifeStatus is null  or animals.lifeStatus = :lifeStatus) " +
             "AND (:gender is null or animals.gender = :gender)")
-    List<Animal> findAnimalByParams(@Param("startDateTime") Timestamp startDateTime,
-                                    @Param("endDateTime")Timestamp endDateTime,
+    List<Animal> findAnimalByParams(@Param("startDateTime") Date startDateTime,
+                                    @Param("endDateTime")Date endDateTime,
                                     @Param("chippingLocationId")Long chippingLocationId,
                                     @Param("lifeStatus") LifeStatus lifeStatus,
                                     @Param("gender") Gender gender);

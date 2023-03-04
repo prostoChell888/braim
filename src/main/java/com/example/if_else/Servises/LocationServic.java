@@ -1,15 +1,19 @@
 package com.example.if_else.Servises;
 
 
-import com.example.if_else.Models.Account;
 import com.example.if_else.Models.Location;
 import com.example.if_else.Reposiories.LocationRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 @Service
+@Validated
 public class LocationServic {
 
     private final LocationRepository locationRepository;
@@ -19,11 +23,7 @@ public class LocationServic {
     }
 
 
-    public ResponseEntity<Location> getLacateById(Long pointId) {
-
-        if (pointId == null || pointId <= 0) {
-            return ResponseEntity.status(400).body(null);
-        }
+    public ResponseEntity<Location> getLacattionById(@Valid @Min(1) @NotNull Long pointId) {
 
         Optional<Location> location = locationRepository.findById(pointId);
 

@@ -56,25 +56,28 @@ public class Animal {
     @ManyToOne
     @JoinColumn(name = "chipper_id",
             referencedColumnName = "id")
+    @NotNull
     private  Account chipperId;
 
 
     @OneToOne
     @JoinColumn(name = "chipping_location_id",
             referencedColumnName = "id")
+    @NotNull
     private Location chippingLocationId;
 
 
     @OneToMany
     @JoinColumn(name = "visited_location_id",
             referencedColumnName = "id")
+    @NotNull
     private List<VisitsLocation> visitedLocations;
 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "death_date_time")
     @NotNull
-    private Timestamp deathDateTime;
+    private Date deathDateTime;
 
 
 }

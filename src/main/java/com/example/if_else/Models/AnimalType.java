@@ -4,6 +4,7 @@ package com.example.if_else.Models;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 @Entity
 @Getter
@@ -19,6 +20,7 @@ public class AnimalType {
     private Long id;
 
     @Column(name = "type", nullable = false)
+    @NotBlank
     String type;
 
 

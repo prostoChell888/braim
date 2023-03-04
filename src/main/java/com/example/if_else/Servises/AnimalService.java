@@ -8,16 +8,20 @@ import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import javax.persistence.TemporalType;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@Validated
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
@@ -28,7 +32,7 @@ public class AnimalService {
         this.entityManager = entityManager;
     }
 
-    public ResponseEntity<Animal> getAnimalById(@Valid Long animalId) {
+    public ResponseEntity<Animal> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 
         if (animalId == null || animalId <= 0) {
             return ResponseEntity.status(400).body(null);
@@ -67,11 +71,11 @@ public class AnimalService {
                 collect(Collectors.toList());
     }
 
-    public ResponseEntity<List<VisitsLocation>> getLocation(@Valid Long animalId, AmimalSerchParameters param) {
+    public ResponseEntity<List<VisitsLocation>> getLocation(@Valid @Min(1) @NotNull Long animalId,
+                                                            @Valid AmimalSerchParameters param) {
 
-        //todo проверка на соответстви формату времени
-        if (animalId == null || param.getSize() <= 0 || param.getFrom() < 0 || animalId <= 0)
-        {return ResponseEntity.status(400).body(null);}
+
+
 
         Optional<Animal> animal = animalRepository.findById(animalId);
         if (animal.isEmpty()) {return ResponseEntity.status(404).body(null);}
@@ -81,7 +85,8 @@ public class AnimalService {
         return ResponseEntity.status(200).body(accounts);
     }
 
-    private List<VisitsLocation> getVisitsLocations(@Valid Long animalId, AmimalSerchParameters param) {
+    private List<VisitsLocation> getVisitsLocations(@Valid @Min(1) @NotNull Long animalId,
+                                                    @Valid AmimalSerchParameters param) {
         Query query = entityManager.createQuery(
                 "SELECT visit " +
                         "FROM Animal animal " +
@@ -97,6 +102,7 @@ public class AnimalService {
         query.setMaxResults(param.getSize());
         List<VisitsLocation> accounts = query.getResultList();
 
+        //todo переделать на страницы
         //animalRepository.findAll(PageRequest.of(0, 10));
 
         return accounts;

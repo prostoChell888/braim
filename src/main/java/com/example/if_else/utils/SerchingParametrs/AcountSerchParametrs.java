@@ -14,7 +14,7 @@ import javax.validation.constraints.Email;
 public class AcountSerchParametrs {
     private  String firstName;
     private  String lastName;
-    @Email
+
     private String email;
     private Integer from = 0;
     private Integer size = 10;
