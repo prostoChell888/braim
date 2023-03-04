@@ -20,11 +20,6 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    //todo отладка
-    @GetMapping("c")
-    public String check() {
-        return "ку!!!";
-    }
 
 
     //todo добавить валидацию
