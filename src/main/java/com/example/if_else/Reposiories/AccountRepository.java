@@ -25,7 +25,7 @@ public interface AccountRepository extends JpaRepository<Account, Integer>, JpaS
     @Query(nativeQuery=true,
             value="SELECT * " +
                     "FROM accounts " +
-                   "WHERE (:firstName is null or LOWER(first_name) LIKE CONCAT ('%',  :firstName. ,'%')) " +
+                   "WHERE (:firstName is null or LOWER(first_name) LIKE CONCAT ('%',  :firstName ,'%')) " +
                     "AND (:lastName is null or LOWER(last_name) LIKE CONCAT ('%',:lastName,'%' )) " +
                     "AND (:email is null or LOWER(email) LIKE  CONCAT('%', :email, '%' )) " +
                     " order by(id) limit :limit offset :offset")
