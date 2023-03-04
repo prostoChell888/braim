@@ -50,26 +50,19 @@ public class AnimalService {
 
     public ResponseEntity<List<Animal>> findAnimals(@Valid AmimalSerchParameters param) {
 
-        List<Animal> animals = getAnimals(param);
-
-        return ResponseEntity.status(200).body(animals);
-    }
-
-    private List<Animal> getAnimals(@Valid AmimalSerchParameters param) {
-
-        List<Animal> res = animalRepository.findAnimalByParams(
+        List<Animal> animals = animalRepository.findAnimalByParams(
                 param.getStartDateTime(),
                 param.getEndDateTime(),
                 param.getChippingLocationId(),
                 param.getLifeStatus(),
-                param.getGender());
+                param.getGender(),
+                param.getFrom(),
+                param.getSize());
 
-//todo переделать на более эфективную выборку
-        return res.stream().
-                skip(param.getFrom()).
-                limit(param.getSize()).
-                collect(Collectors.toList());
+        return ResponseEntity.status(200).body(animals);
     }
+
+
 
     public ResponseEntity<List<VisitsLocation>> getLocation(@Valid @Min(1) @NotNull Long animalId,
                                                             @Valid AmimalSerchParameters param) {

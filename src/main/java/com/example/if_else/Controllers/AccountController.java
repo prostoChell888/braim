@@ -22,17 +22,22 @@ public class AccountController {
 
 
 
-    //todo добавить валидацию
+
     @GetMapping("{accountId}")
     public ResponseEntity<Account> show(@PathVariable("accountId") Integer accountId) {
         return accountService.getUserById(accountId);
     }
 
 
-    //todo добавить валидацию
+
     @GetMapping("search")
     public ResponseEntity<List<Account>> findAccounts(AcountSerchParametrs param) {
 
         return accountService.findAccounts(param);
+    }
+
+    @PutMapping("{accountId}")
+    public ResponseEntity<Account> update(@PathVariable("accountId") Integer accountId, Account account) {
+        return accountService.updateUserById(accountId, account);
     }
 }
