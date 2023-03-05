@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -43,8 +44,8 @@ public class LocationService {
         return ResponseEntity.status(201).body(location);
     }
 
-    public ResponseEntity<Location> updateUserById(@Valid @Min(1) @NotNull Long accountId,
-                                                  @Valid Location location) {
+    public ResponseEntity<Location> updateLocationById(@Valid @Min(1) @NotNull Long accountId,
+                                                       @Valid Location location) {
         if (isPresentOfLongitudeAndLatitudeOnDB(location)) {
             return ResponseEntity.status(409).body(null);
         }
@@ -65,11 +66,20 @@ public class LocationService {
     }
 
     private boolean isPresentOfLongitudeAndLatitudeOnDB(Location location) {
-
         Optional<Location> optionalLocation2 = locationRepository
                 .findByLatitudeAndLongitude(location.getLatitude(), location.getLongitude());
 
         return optionalLocation2.isPresent();
+    }
 
+    public ResponseEntity<Location> deleteLocationById(Long loacationId) {
+        Optional<Location> optionalLocation = locationRepository.findById(loacationId);
+
+        if (optionalLocation.isEmpty() ) {
+            return ResponseEntity.status(404).body(null);
+        }
+        locationRepository.deleteById(loacationId);
+
+        return ResponseEntity.ok().body(null);
     }
 }

@@ -1,7 +1,6 @@
 package com.example.if_else.Controllers;
 
 
-import com.example.if_else.Models.Account;
 import com.example.if_else.Models.Location;
 import com.example.if_else.Servises.LocationService;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +31,15 @@ public class LocationController {
     public ResponseEntity<Location> update(@PathVariable("accountId") Long accountId,
                                           @RequestBody Location location) {
 
-        return locationServic.updateUserById(accountId, location);
+        return locationServic.updateLocationById(accountId, location);
     }
 
+
+    @DeleteMapping("{accountId}")
+    public ResponseEntity<Location> delete(@PathVariable("accountId") Long accountId) {
+
+        return locationServic.deleteLocationById(accountId);
+    }
 
 
 }
