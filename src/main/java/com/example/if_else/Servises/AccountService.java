@@ -5,8 +5,6 @@ import com.example.if_else.Models.Account;
 import com.example.if_else.security.UserDetailsPrincipal;
 import com.example.if_else.utils.SerchingParametrs.AcountSerchParametrs;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,11 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -80,7 +78,22 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.status(201).body(account);
     }
 
-//    public ResponseEntity<Account> updateUserById(Integer accountId, Account account) {
-//
-//    }
+    public ResponseEntity<Account> updateUserById(Integer accountId, Account newAccountData, String login) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+
+        if (optionalAccount.isEmpty() || !Objects.equals(login, optionalAccount.get().getEmail())) {
+            return ResponseEntity.status(403).body(null);
+        }
+        Account account = optionalAccount.get();
+        account.setFirstName(newAccountData.getFirstName());
+        account.setLastName(newAccountData.getLastName());
+        account.setEmail(newAccountData.getEmail());
+        account.setPassword(newAccountData.getPassword());
+
+        Account updatingAccountData = accountRepository.save(account);
+
+        return ResponseEntity.status(200).body(updatingAccountData);
+    }
+
+
 }
