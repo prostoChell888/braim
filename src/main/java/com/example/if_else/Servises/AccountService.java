@@ -30,9 +30,8 @@ public class AccountService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Account user = accountRepository.findByEmail(userName).get();
-        UserDetailsPrincipal userDetailsPrincipal = new UserDetailsPrincipal(user);
 
-        return userDetailsPrincipal;
+        return new UserDetailsPrincipal(user);
     }
 
 
@@ -78,7 +77,7 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.status(201).body(account);
     }
 
-    public ResponseEntity<Account> updateUserById(Integer accountId, Account newAccountData, String login) {
+    public ResponseEntity<Account> updateUserById(@Valid @Min(1) @NotNull Integer accountId,@Valid Account newAccountData, String login) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
 
         if (optionalAccount.isEmpty() || !Objects.equals(login, optionalAccount.get().getEmail())) {
@@ -88,7 +87,7 @@ public class AccountService implements UserDetailsService {
         account.setFirstName(newAccountData.getFirstName());
         account.setLastName(newAccountData.getLastName());
         account.setEmail(newAccountData.getEmail());
-        account.setPassword(newAccountData.getPassword());
+        account.setPassword(new BCryptPasswordEncoder().encode(newAccountData.getPassword()));
 
         Account updatingAccountData = accountRepository.save(account);
 
@@ -96,4 +95,15 @@ public class AccountService implements UserDetailsService {
     }
 
 
+    public ResponseEntity<Account> deleteUserById(@Valid @Min(1) @NotNull Integer accountId, String login) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+
+        if (optionalAccount.isEmpty() || !Objects.equals(login, optionalAccount.get().getEmail())) {
+            return ResponseEntity.status(403).body(null);
+        }
+
+        accountRepository.deleteById(accountId);
+
+        return ResponseEntity.ok().body(null);
+    }
 }

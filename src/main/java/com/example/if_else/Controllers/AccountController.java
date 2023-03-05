@@ -42,4 +42,11 @@ public class AccountController {
         return accountService.updateUserById(accountId, account, principal.getName());
     }
 
+    @DeleteMapping("{accountId}")
+    public ResponseEntity<Account> delete(@PathVariable("accountId") Integer accountId,
+                                          Principal principal) {
+
+        return accountService.deleteUserById(accountId,  principal.getName());
+    }
+
 }
