@@ -5,32 +5,27 @@ import com.example.if_else.Models.Animal;
 import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Reposiories.AnimalRepository;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
-import org.springframework.data.domain.PageRequest;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Validated
+@RequiredArgsConstructor
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final EntityManager entityManager;
-
-    public AnimalService(AnimalRepository animalRepository, EntityManager entityManager) {
-        this.animalRepository = animalRepository;
-        this.entityManager = entityManager;
-    }
 
     public ResponseEntity<Animal> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 

@@ -4,7 +4,7 @@ import com.example.if_else.Reposiories.AccountRepository;
 import com.example.if_else.Models.Account;
 import com.example.if_else.security.UserDetailsPrincipal;
 import com.example.if_else.utils.SerchingParametrs.AcountSerchParametrs;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +23,7 @@ import java.util.Optional;
 
 @Service
 @Validated
+@RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
     private final EntityManager entityManager;
     private final AccountRepository accountRepository;
@@ -35,14 +36,7 @@ public class AccountService implements UserDetailsService {
     }
 
 
-    @Autowired
-    public AccountService(EntityManager entityManager, AccountRepository accountRepository) {
-        this.entityManager = entityManager;
-        this.accountRepository = accountRepository;
-    }
-
     public ResponseEntity<Account> getUserById(@Valid @Min(1) @NotNull Integer accountId) {
-
         Optional<Account> account = accountRepository.findById(accountId);
 
         if (account.isPresent()) {
@@ -53,15 +47,12 @@ public class AccountService implements UserDetailsService {
     }
 
     public ResponseEntity<List<Account>> findAccounts(@Valid AcountSerchParametrs param) {
-
-
         List<Account> accounts = accountRepository.
                 findAccByParams(param.getFirstName(),
                         param.getLastName(),
                         param.getEmail(),
                         param.getSize(),
                         param.getFrom());
-
 
         return ResponseEntity.ok().body(accounts);
     }
@@ -77,7 +68,9 @@ public class AccountService implements UserDetailsService {
         return ResponseEntity.status(201).body(account);
     }
 
-    public ResponseEntity<Account> updateUserById(@Valid @Min(1) @NotNull Integer accountId,@Valid Account newAccountData, String login) {
+    public ResponseEntity<Account> updateUserById(@Valid @Min(1) @NotNull Integer accountId,
+                                                  @Valid Account newAccountData,
+                                                  String login) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
 
         if (optionalAccount.isEmpty() || !Objects.equals(login, optionalAccount.get().getEmail())) {

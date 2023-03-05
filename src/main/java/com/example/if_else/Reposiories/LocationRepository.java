@@ -12,4 +12,6 @@ public interface LocationRepository extends JpaRepository<Location, Long> {
 
     @Override
     Optional<Location> findById(Long id);
+
+    Optional<Location> findByLatitudeAndLongitude(Double latitude, Double longitude);
 }

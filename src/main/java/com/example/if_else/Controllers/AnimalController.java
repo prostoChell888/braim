@@ -5,21 +5,19 @@ import com.example.if_else.Models.Animal;
 import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("animals")
 public class AnimalController {
 
 
     private final AnimalService animalService;
-
-    public AnimalController(AnimalService animalService) {
-        this.animalService = animalService;
-    }
 
     //todo добавить валидацию
     @GetMapping("{animalId}")
