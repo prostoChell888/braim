@@ -5,6 +5,7 @@ import com.example.if_else.Models.Animal;
 import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.mapers.AnimalProjection;
+import com.example.if_else.mapers.ChangeTypeDto;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
@@ -63,15 +64,20 @@ public class AnimalController {
                                                             @PathVariable("typeId") Long typeId) {
         return animalService.addTypeToAnimal(animalId, typeId);
     }
-//  todo  DELETE - /animals/{animalId}/types/{typeId}
+
 
     @DeleteMapping("{animalId}/types/{typeId}")
     public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(@PathVariable("animalId") Long animalId,
-                                                            @PathVariable("typeId") Long typeId) {
+                                                                 @PathVariable("typeId") Long typeId) {
         return animalService.deleteTypeFromAnimal(animalId, typeId);
     }
 
-//    todo PUT - /animals/{animalId}/types
+    //    todo PUT - /animals/{animalId}/types
+    @PutMapping("/{animalId}/types")
+    public ResponseEntity<AnimalProjection> changeTypeFromAnimal(@PathVariable("animalId") Long animalId,
+                                                                 @RequestBody ChangeTypeDto changeTypeDto) {
+        return animalService.changeTypeFromAnimal(animalId, changeTypeDto);
+    }
 
 //    todo DELETE - /animals/{animalId}/types/{typeId}
 

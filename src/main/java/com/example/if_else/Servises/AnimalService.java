@@ -7,6 +7,7 @@ import com.example.if_else.Reposiories.AnimalRepository;
 import com.example.if_else.Reposiories.AnimalTypeRepository;
 import com.example.if_else.Reposiories.LocationRepository;
 import com.example.if_else.mapers.AnimalProjection;
+import com.example.if_else.mapers.ChangeTypeDto;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
@@ -224,7 +225,8 @@ public class AnimalService {
         return ResponseEntity.status(201).body(animalProjection);
     }
 
-    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(Long animalId, Long typeId) {
+    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(@Valid @Min(1) @NotNull  Long animalId,
+                                                                 @Valid @Min(1) @NotNull  Long typeId) {
 
         Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
 
@@ -242,6 +244,34 @@ public class AnimalService {
         AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animalId);
 
         return ResponseEntity.status(201).body(animalProjection);
+    }
+
+    public ResponseEntity<AnimalProjection> changeTypeFromAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                                 @Valid  ChangeTypeDto changeTypeDto) {
+        Optional<AnimalType> newAnimalTypeOption = animalTypeRepository.findById(changeTypeDto.getNewTypeId());
+        if (newAnimalTypeOption.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<AnimalType> oldAnimalTypeOption = animalTypeRepository.findById(changeTypeDto.getOldTypeId());
+        if (oldAnimalTypeOption.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
+
+        if (optionalAnimal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        Animal animal = optionalAnimal.get();
+
+        Collections.replaceAll(animal.getAnimalTypes(), oldAnimalTypeOption.get(), newAnimalTypeOption.get());
+
+        animalRepository.save(animal);
+
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
+
+        return ResponseEntity.status(200).body(animalProjection);
     }
 }
 
