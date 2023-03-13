@@ -65,7 +65,11 @@ public class AnimalController {
     }
 //  todo  DELETE - /animals/{animalId}/types/{typeId}
 
-
+    @DeleteMapping("{animalId}/types/{typeId}")
+    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(@PathVariable("animalId") Long animalId,
+                                                            @PathVariable("typeId") Long typeId) {
+        return animalService.deleteTypeFromAnimal(animalId, typeId);
+    }
 
 //    todo PUT - /animals/{animalId}/types
 

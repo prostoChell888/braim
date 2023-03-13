@@ -223,5 +223,25 @@ public class AnimalService {
 
         return ResponseEntity.status(201).body(animalProjection);
     }
+
+    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(Long animalId, Long typeId) {
+
+        Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
+
+        if (optionalAnimal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<AnimalType> animalTypeOption = animalTypeRepository.findById(typeId);
+        if (animalTypeOption.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        Animal animal = optionalAnimal.get();
+        animal.getAnimalTypes().remove(animalTypeOption.get());
+
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animalId);
+
+        return ResponseEntity.status(201).body(animalProjection);
+    }
 }
 
