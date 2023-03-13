@@ -184,5 +184,22 @@ public class AnimalService {
 
         return ResponseEntity.status(201).body(animalProjection);
     }
+
+    public ResponseEntity<Object> deleteAnimal(@Valid @Min(1) @NotNull Long animalId) {
+        Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
+
+        if (optionalAnimal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        Animal updatinAnimal = optionalAnimal.get();
+
+        if (updatinAnimal.getVisitedLocations().size() > 0) {
+            return ResponseEntity.status(400).body(null);
+        }
+        animalRepository.deleteById(animalId);
+
+        return ResponseEntity.status(200).body(null);
+    }
+
 }
 

@@ -54,7 +54,11 @@ public ResponseEntity<AnimalProjection> update(@PathVariable("animalId") Long an
     return animalService.updateAnimal(animalId, animalCreateParam);
 }
 
-//    todo  DELETE - /animals/{animalId}
+    @DeleteMapping("{animalId}")
+    public ResponseEntity<Object> delete(@PathVariable("animalId") Long animalId) {
+         return animalService.deleteAnimal(animalId);
+    }
+
 
 //    todo  POST - /animals/{animalId}/types/{typeId}
 

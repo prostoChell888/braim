@@ -25,9 +25,9 @@ public class Animal {
     private Long id;
 
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "animal_type_id",
-            referencedColumnName = "id")
+            referencedColumnName = "id" )
 
     private List<AnimalType> animalTypes;
 
