@@ -62,7 +62,7 @@ public class LocationService {
 
         newLocation = locationRepository.save(newLocation);
 
-        return ResponseEntity.status(201).body(newLocation);
+        return ResponseEntity.status(200).body(newLocation);
     }
 
     private boolean isPresentOfLongitudeAndLatitudeOnDB(Location location) {
@@ -72,7 +72,7 @@ public class LocationService {
         return optionalLocation2.isPresent();
     }
 
-    public ResponseEntity<Location> deleteLocationById(Long loacationId) {
+    public ResponseEntity<Location> deleteLocationById(@Valid @Min(1) @NotNull Long loacationId) {
         Optional<Location> optionalLocation = locationRepository.findById(loacationId);
 
         if (optionalLocation.isEmpty() ) {

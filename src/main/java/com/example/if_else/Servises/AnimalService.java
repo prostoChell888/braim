@@ -1,12 +1,18 @@
 package com.example.if_else.Servises;
 
 
-import com.example.if_else.Models.Animal;
-import com.example.if_else.Models.VisitsLocation;
+import com.example.if_else.Models.*;
+import com.example.if_else.Reposiories.AccountRepository;
 import com.example.if_else.Reposiories.AnimalRepository;
+import com.example.if_else.Reposiories.AnimalTypeRepository;
+import com.example.if_else.Reposiories.LocationRepository;
+import com.example.if_else.mapers.AnimalProjection;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
+import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -16,8 +22,7 @@ import javax.persistence.Query;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @Validated
@@ -26,6 +31,12 @@ public class AnimalService {
 
     private final AnimalRepository animalRepository;
     private final EntityManager entityManager;
+
+    private final AnimalTypeRepository animalTypeRepository;
+
+    private final AccountRepository accountRepository;
+
+    private final LocationRepository locationRepository;
 
     public ResponseEntity<Animal> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 
@@ -45,28 +56,27 @@ public class AnimalService {
 
     public ResponseEntity<List<Animal>> findAnimals(@Valid AmimalSerchParameters param) {
 
-        List<Animal> animals = animalRepository.findAnimalByParams(
+
+        Page<Animal> animals = animalRepository.findAnimalByParams(
                 param.getStartDateTime(),
                 param.getEndDateTime(),
                 param.getChippingLocationId(),
                 param.getLifeStatus(),
                 param.getGender(),
-                param.getFrom(),
-                param.getSize());
+                PageRequest.of(param.getFrom(), param.getSize(), Sort.Direction.ASC, "id"));
 
-        return ResponseEntity.status(200).body(animals);
+        return ResponseEntity.status(200).body(animals.getContent());
     }
-
 
 
     public ResponseEntity<List<VisitsLocation>> getLocation(@Valid @Min(1) @NotNull Long animalId,
                                                             @Valid AmimalSerchParameters param) {
 
 
-
-
         Optional<Animal> animal = animalRepository.findById(animalId);
-        if (animal.isEmpty()) {return ResponseEntity.status(404).body(null);}
+        if (animal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
 
         List<VisitsLocation> accounts = getVisitsLocations(animalId, param);
 
@@ -95,4 +105,84 @@ public class AnimalService {
 
         return accounts;
     }
+
+    public ResponseEntity<AnimalProjection> createAnimal(@Valid AnimalCreateParam params) {
+        // проверка наличия id аккаунта
+        Optional<Account> accountOptional = accountRepository.findById(params.getChipperId());
+        if (accountOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        //проверка на уникльность элементов
+        Set<Long> set = new HashSet<>(params.getAnimalTypes());
+        if (set.size() != params.getAnimalTypes().size()) {
+            return ResponseEntity.status(409).body(null);
+        }
+
+        //проверка налчия в БД id animalTypes
+        List<AnimalType> animalTypes = animalTypeRepository.findAllById(params.getAnimalTypes());
+        if (animalTypes.size() != params.getAnimalTypes().size()) {
+            return ResponseEntity.status(404).body(null);
+        }
+// проверка наличия chipingId
+        Optional<Location> locationOptional = locationRepository.findById(params.getChippingLocationId());
+        if (locationOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Animal animal = Animal.builder()
+                .animalTypes(animalTypes)
+                .weight(params.getWeight())
+                .length(params.getLength())
+                .height(params.getHeight())
+                .gender(params.getGender())
+                .chipperId(accountOptional.get())
+                .chippingLocationId(locationOptional.get())
+                .build();
+
+        Animal newAnimal = animalRepository.save(animal);
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(newAnimal.getId());
+        return ResponseEntity.status(201).body(animalProjection);
+    }
+
+    public ResponseEntity<AnimalProjection> updateAnimal(@Valid @Min(1) @NotNull Long animalId, @Valid AnimalCreateParam param) {
+
+
+
+        Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
+
+        if (optionalAnimal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<Location> optionalLocation = locationRepository.findById(param.getChippingLocationId());
+        if (optionalLocation.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<Account> accountOptional = accountRepository.findById(param.getChipperId());
+        if (accountOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Animal updatinAnimal = optionalAnimal.get();
+
+        if (updatinAnimal.getVisitedLocations().size() != 0
+                && Objects.equals(param.getChippingLocationId(), updatinAnimal.getVisitedLocations().get(0).getId())) {
+            return ResponseEntity.status(400).body(null);
+        }
+        updatinAnimal.setWeight(param.getWeight());
+        updatinAnimal.setLength(param.getLength());
+        updatinAnimal.setHeight(param.getHeight());
+        updatinAnimal.setGender(param.getGender());
+        updatinAnimal.setLifeStatus(param.getLifeStatus());
+        updatinAnimal.setChipperId(accountOptional.get());
+        updatinAnimal.setChippingLocationId(optionalLocation.get());
+
+        animalRepository.save(updatinAnimal);
+
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(updatinAnimal.getId());
+
+        return ResponseEntity.status(201).body(animalProjection);
+    }
 }
+

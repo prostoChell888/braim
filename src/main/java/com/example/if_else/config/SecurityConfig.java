@@ -4,6 +4,7 @@ import com.example.if_else.Servises.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -49,6 +50,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/registration").permitAll()
                 .antMatchers("/accounts/{accountId}").permitAll()
+                .antMatchers("/animals/{animalId}").permitAll()
+                .antMatchers("/animals/types/{typeId}").permitAll()
+                .antMatchers("/locations/{pointId}").permitAll()
+                .antMatchers("/animals/search").permitAll()
+                .antMatchers("/accounts/search").permitAll()
+                .antMatchers("/animals/{animalId}/locations").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic();
     }

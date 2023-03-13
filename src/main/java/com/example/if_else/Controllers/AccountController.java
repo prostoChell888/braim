@@ -18,15 +18,15 @@ public class AccountController {
 
     private final AccountService accountService;
 
+    @GetMapping("{accountId}")
+    public ResponseEntity<Account> show(@PathVariable("accountId") Integer accountId) {
+        return accountService.getUserById(accountId);
+    }
+
     @GetMapping("search")
     public ResponseEntity<List<Account>> findAccounts(AcountSerchParametrs param) {
 
         return accountService.findAccounts(param);
-    }
-
-    @GetMapping("{accountId}")
-    public ResponseEntity<Account> show(@PathVariable("accountId") Integer accountId) {
-        return accountService.getUserById(accountId);
     }
 
     @PutMapping("{accountId}")

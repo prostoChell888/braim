@@ -27,16 +27,16 @@ public class LocationController {
         return locationServic.addLocation(location);
     }
 
-    @PutMapping("{accountId}")
-    public ResponseEntity<Location> update(@PathVariable("accountId") Long accountId,
+    @PutMapping("{pointId}")
+    public ResponseEntity<Location> update(@PathVariable("pointId") Long accountId,
                                           @RequestBody Location location) {
 
         return locationServic.updateLocationById(accountId, location);
     }
 
 
-    @DeleteMapping("{accountId}")
-    public ResponseEntity<Location> delete(@PathVariable("accountId") Long accountId) {
+    @DeleteMapping("{pointId}")
+    public ResponseEntity<Location> delete(@PathVariable("pointId") Long accountId) {
 
         return locationServic.deleteLocationById(accountId);
     }

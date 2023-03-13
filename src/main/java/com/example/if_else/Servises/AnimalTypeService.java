@@ -31,4 +31,48 @@ public class AnimalTypeService {
             return ResponseEntity.status(404).body(null);
         }
     }
+
+    public ResponseEntity<AnimalType> createAnimalType(@Valid AnimalType animalType) {
+        Optional<AnimalType> animalTypeOptional = animalTypeRepository.findByType(animalType.getType());
+
+        if (animalTypeOptional.isPresent()) {
+            return ResponseEntity.status(409).body(null);
+        }
+
+        animalType = animalTypeRepository.save(animalType);
+
+        return ResponseEntity.status(201).body(animalType);
+
+    }
+
+    public ResponseEntity<AnimalType> updateAnimalType(Long animalTypeId, AnimalType animalType) {
+        Optional<AnimalType> optionalAnimalType = animalTypeRepository.findById(animalTypeId);
+
+        if (optionalAnimalType.isEmpty()){
+            return ResponseEntity.status(404).body(null);
+        }
+        optionalAnimalType = animalTypeRepository.findByType(animalType.getType());
+
+        if (optionalAnimalType.isPresent()){
+            return ResponseEntity.status(409).body(null);
+        }
+
+        animalType.setId(animalTypeId);
+        animalType = animalTypeRepository.save(animalType);
+
+        return ResponseEntity.status(200).body(animalType);
+
+    }
+
+    public ResponseEntity<AnimalType> delete(@Valid @Min(1) @NotNull Long animalTypeId) {
+        Optional<AnimalType> optionalAnimalType = animalTypeRepository.findById(animalTypeId);
+
+        if (optionalAnimalType.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        animalTypeRepository.deleteById(animalTypeId);
+
+        return ResponseEntity.ok().body(null);
+    }
 }

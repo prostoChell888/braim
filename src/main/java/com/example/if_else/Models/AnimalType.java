@@ -5,6 +5,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter
@@ -20,6 +21,7 @@ public class AnimalType {
     private Long id;
 
     @Column(name = "type", nullable = false)
+    @NotNull
     @NotBlank
     String type;
 

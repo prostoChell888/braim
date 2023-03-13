@@ -25,7 +25,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 public class AccountService implements UserDetailsService {
-    private final EntityManager entityManager;
+//    private final EntityManager entityManager;
     private final AccountRepository accountRepository;
 
     @Override
@@ -76,6 +76,12 @@ public class AccountService implements UserDetailsService {
         if (optionalAccount.isEmpty() || !Objects.equals(login, optionalAccount.get().getEmail())) {
             return ResponseEntity.status(403).body(null);
         }
+
+//         optionalAccount = accountRepository.findByEmail(newAccountData.getEmail());
+//        if (optionalAccount.isPresent()){
+//            return ResponseEntity.status(409).body(null);
+//        }
+
         Account account = optionalAccount.get();
         account.setFirstName(newAccountData.getFirstName());
         account.setLastName(newAccountData.getLastName());

@@ -6,16 +6,17 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@ToString
+
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name = "animals")
 public class Animal {
     @Id
@@ -24,10 +25,11 @@ public class Animal {
     private Long id;
 
 
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "animal_type_id",
             referencedColumnName = "id")
-    private AnimalType animalType;
+
+    private List<AnimalType> animalTypes;
 
     @Column(name = "weight")
     private Float weight;
@@ -44,13 +46,15 @@ public class Animal {
 
     @Column(name = "life_status")
     @Enumerated(EnumType.STRING)
-    private LifeStatus lifeStatus;
+    @Builder.Default
+    private LifeStatus lifeStatus = LifeStatus.ALIVE;
 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "chipping_date_time")
     @NotNull
-    private Date chippingDateTime;
+    @Builder.Default
+    private Date chippingDateTime = new Date();
 
 
     @ManyToOne
@@ -71,13 +75,14 @@ public class Animal {
     @JoinColumn(name = "visited_location_id",
             referencedColumnName = "id")
     @NotNull
-    private List<VisitsLocation> visitedLocations;
+    @Builder.Default
+    private List<VisitsLocation> visitedLocations =new ArrayList<>();
 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "death_date_time")
-    @NotNull
     private Date deathDateTime;
+
 
 
 }

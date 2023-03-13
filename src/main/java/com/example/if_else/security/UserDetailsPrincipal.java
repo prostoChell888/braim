@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class UserDetailsPrincipal implements UserDetails {
 
-    private Account user;
+    private final Account user;
 
     public UserDetailsPrincipal(Account user) {
         this.user = user;
