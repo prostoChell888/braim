@@ -28,7 +28,6 @@ public class AnimalController {
     }
 
 
-
     @GetMapping("search")
     public ResponseEntity<List<Animal>> findAnimals(AmimalSerchParameters parameters) {
 
@@ -48,19 +47,25 @@ public class AnimalController {
     }
 
 
-@PutMapping("{animalId}")
-public ResponseEntity<AnimalProjection> update(@PathVariable("animalId") Long animalId,
-                                               @RequestBody AnimalCreateParam animalCreateParam) {
-    return animalService.updateAnimal(animalId, animalCreateParam);
-}
+    @PutMapping("{animalId}")
+    public ResponseEntity<AnimalProjection> update(@PathVariable("animalId") Long animalId,
+                                                   @RequestBody AnimalCreateParam animalCreateParam) {
+        return animalService.updateAnimal(animalId, animalCreateParam);
+    }
 
     @DeleteMapping("{animalId}")
     public ResponseEntity<Object> delete(@PathVariable("animalId") Long animalId) {
-         return animalService.deleteAnimal(animalId);
+        return animalService.deleteAnimal(animalId);
     }
 
+    @PostMapping("{animalId}/types/{typeId}")
+    public ResponseEntity<AnimalProjection> addTypeToAnimal(@PathVariable("animalId") Long animalId,
+                                                            @PathVariable("typeId") Long typeId) {
+        return animalService.addTypeToAnimal(animalId, typeId);
+    }
+//  todo  DELETE - /animals/{animalId}/types/{typeId}
 
-//    todo  POST - /animals/{animalId}/types/{typeId}
+
 
 //    todo PUT - /animals/{animalId}/types
 

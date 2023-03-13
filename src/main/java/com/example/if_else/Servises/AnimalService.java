@@ -201,5 +201,27 @@ public class AnimalService {
         return ResponseEntity.status(200).body(null);
     }
 
+    public ResponseEntity<AnimalProjection> addTypeToAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                            @Valid @Min(1) @NotNull Long typeId) {
+        Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
+        if (optionalAnimal.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<AnimalType> animalTypeOption = animalTypeRepository.findById(typeId);
+        if (animalTypeOption.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        Animal animal = optionalAnimal.get();
+        AnimalType animalType = animalTypeOption.get();
+        if (animal.getAnimalTypes().contains(animalType)){
+            return ResponseEntity.status(409).body(null);
+        }
+
+        animal.getAnimalTypes().add(animalType);
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animalId);
+
+        return ResponseEntity.status(201).body(animalProjection);
+    }
 }
 
