@@ -2,18 +2,18 @@ package com.example.if_else.Servises;
 
 
 import com.example.if_else.Models.*;
-import com.example.if_else.Reposiories.AccountRepository;
-import com.example.if_else.Reposiories.AnimalRepository;
-import com.example.if_else.Reposiories.AnimalTypeRepository;
-import com.example.if_else.Reposiories.LocationRepository;
+import com.example.if_else.Reposiories.*;
+import com.example.if_else.enums.LifeStatus;
 import com.example.if_else.mapers.AnimalProjection;
 import com.example.if_else.mapers.ChangeTypeDto;
+import com.example.if_else.request.LocationUpdateRequest;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -24,6 +24,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Validated
@@ -38,6 +39,7 @@ public class AnimalService {
     private final AccountRepository accountRepository;
 
     private final LocationRepository locationRepository;
+    private final VisitsLocationRepository visitsLocationRepository;
 
     public ResponseEntity<Animal> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 
@@ -148,7 +150,6 @@ public class AnimalService {
     public ResponseEntity<AnimalProjection> updateAnimal(@Valid @Min(1) @NotNull Long animalId, @Valid AnimalCreateParam param) {
 
 
-
         Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
 
         if (optionalAnimal.isEmpty()) {
@@ -215,7 +216,7 @@ public class AnimalService {
         }
         Animal animal = optionalAnimal.get();
         AnimalType animalType = animalTypeOption.get();
-        if (animal.getAnimalTypes().contains(animalType)){
+        if (animal.getAnimalTypes().contains(animalType)) {
             return ResponseEntity.status(409).body(null);
         }
 
@@ -225,8 +226,8 @@ public class AnimalService {
         return ResponseEntity.status(201).body(animalProjection);
     }
 
-    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(@Valid @Min(1) @NotNull  Long animalId,
-                                                                 @Valid @Min(1) @NotNull  Long typeId) {
+    public ResponseEntity<AnimalProjection> deleteTypeFromAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                                 @Valid @Min(1) @NotNull Long typeId) {
 
         Optional<Animal> optionalAnimal = animalRepository.findById(animalId);
 
@@ -247,7 +248,7 @@ public class AnimalService {
     }
 
     public ResponseEntity<AnimalProjection> changeTypeFromAnimal(@Valid @Min(1) @NotNull Long animalId,
-                                                                 @Valid  ChangeTypeDto changeTypeDto) {
+                                                                 @Valid ChangeTypeDto changeTypeDto) {
         Optional<AnimalType> newAnimalTypeOption = animalTypeRepository.findById(changeTypeDto.getNewTypeId());
         if (newAnimalTypeOption.isEmpty()) {
             return ResponseEntity.status(404).body(null);
@@ -272,6 +273,111 @@ public class AnimalService {
         AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
 
         return ResponseEntity.status(200).body(animalProjection);
+    }
+
+    public ResponseEntity<AnimalProjection> addLocateToAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                              @Valid @Min(1) @NotNull Long pointId) {
+
+        Optional<Location> locationOptional = locationRepository.findById(pointId);
+        if (locationOptional.isPresent()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<Animal> animalOptional = animalRepository.findById(animalId);
+        if (animalOptional.isPresent()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        //todo вынести отдельнонет
+        Animal animal = animalOptional.get();
+        if (animal.getLifeStatus().equals(LifeStatus.DEAD)) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        if (locationOptional.get().equals(animal.getChippingLocationId())) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        VisitsLocation visitsLocation = VisitsLocation.builder()
+                .location(locationOptional.get())
+                .build();
+        animal.getVisitedLocations().add(visitsLocation);
+
+        animal = animalRepository.save(animal);
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
+
+        return ResponseEntity.status(200).body(animalProjection);
+    }
+
+    public ResponseEntity<AnimalProjection> changeLocateToAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                                 @Valid LocationUpdateRequest oldNewLacate) {
+
+
+        Optional<Location> locationOptional = locationRepository.findById(oldNewLacate.getLocationPointId());
+        if (locationOptional.isPresent()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<Animal> animalOptional = animalRepository.findById(animalId);
+        if (animalOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Animal animal = animalOptional.get();
+        if (animal.getChippingLocationId().getId().equals(oldNewLacate.getLocationPointId())) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        List<Long> listLacateId = animal.getVisitedLocations().stream()
+                .map(a -> a.getLocation().getId())
+                .collect(Collectors.toList());
+
+        int indexOfChangPoint = listLacateId.indexOf(oldNewLacate.getLocationPointId());
+        if (indexOfChangPoint == -1) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        if (listLacateId.size() - 1 != indexOfChangPoint
+                && !Objects.equals(listLacateId.get(indexOfChangPoint + 1), oldNewLacate.getLocationPointId())) {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        if (0 != indexOfChangPoint
+                && !Objects.equals(listLacateId.get(indexOfChangPoint - 1), oldNewLacate.getLocationPointId())) {
+            return ResponseEntity.status(400).body(null);
+        }
+        animal.getVisitedLocations()
+                .get(indexOfChangPoint)
+                .setLocation(locationOptional.get());
+
+        animalRepository.save(animal);
+        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
+
+        return ResponseEntity.status(200).body(animalProjection);
+
+    }
+
+
+    public ResponseEntity<Object> deleteLocateFromAnimal(Long animalId, Long visitedPointId) {
+        Optional<Animal> animalOptional = animalRepository.findById(animalId);
+        if (animalOptional.isEmpty()) {
+            return ResponseEntity.status(404).body(null);
+        }
+
+        Optional<VisitsLocation> locationOptional = visitsLocationRepository.findById(visitedPointId);
+        if (locationOptional.isPresent()) {
+            return ResponseEntity.status(404).body(null);
+        }
+        VisitsLocation location = locationOptional.get();
+
+        Animal animal = animalOptional.get();
+        if (!animal.getVisitedLocations().remove(location)){
+            return ResponseEntity.status(404).body(null);
+        }
+
+        animalRepository.save(animal);
+
+        return ResponseEntity.ok().body(null);
     }
 }
 

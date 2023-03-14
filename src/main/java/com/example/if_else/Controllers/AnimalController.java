@@ -6,6 +6,7 @@ import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.mapers.AnimalProjection;
 import com.example.if_else.mapers.ChangeTypeDto;
+import com.example.if_else.request.LocationUpdateRequest;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
@@ -72,18 +73,35 @@ public class AnimalController {
         return animalService.deleteTypeFromAnimal(animalId, typeId);
     }
 
-    //    todo PUT - /animals/{animalId}/types
+
     @PutMapping("/{animalId}/types")
     public ResponseEntity<AnimalProjection> changeTypeFromAnimal(@PathVariable("animalId") Long animalId,
                                                                  @RequestBody ChangeTypeDto changeTypeDto) {
         return animalService.changeTypeFromAnimal(animalId, changeTypeDto);
     }
 
-//    todo DELETE - /animals/{animalId}/types/{typeId}
 
-//    todo POST - /animals/{animalId}/locations/{pointId}
 
-//    todo PUT - /animals/{animalId}/locations
+    @PostMapping("{animalId}/locations/{pointId}")
+    public ResponseEntity<AnimalProjection> addLocateToAnimal(@PathVariable Long animalId,
+                                                              @PathVariable Long pointId) {
+        return animalService.addLocateToAnimal(animalId, pointId);
+    }
+
+
+@PutMapping("{animalId}/locations/{pointId}")
+public ResponseEntity<AnimalProjection> changeLocateToAnimal(@PathVariable Long animalId,
+                                                             @RequestBody LocationUpdateRequest locationUpdateRequest) {
+    return animalService.changeLocateToAnimal(animalId, locationUpdateRequest);
+}
+
 
 //    todo DELETE - /animals/{animalId}/locations/{visitedPointId}
+    @DeleteMapping("/{animalId}/locations/{visitedPointId}")
+    public ResponseEntity<Object> deleteLocateFromAnimal(@PathVariable Long animalId,
+                                                                   @PathVariable Long visitedPointId) {
+
+       return animalService.deleteLocateFromAnimal(animalId, visitedPointId);
+
+    }
 }

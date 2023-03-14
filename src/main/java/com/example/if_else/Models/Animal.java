@@ -71,7 +71,7 @@ public class Animal {
     private Location chippingLocationId;
 
 
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "visited_location_id",
             referencedColumnName = "id")
     @NotNull

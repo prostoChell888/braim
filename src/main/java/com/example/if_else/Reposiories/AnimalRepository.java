@@ -15,6 +15,7 @@ import org.springframework.data.repository.query.Param;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecificationExecutor<AnimalProjection> {
 
@@ -39,4 +40,6 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecif
             "FROM Animal an " +
             "WHERE an.id = :id")
     AnimalProjection getAnimalProjectionById( @Param("id") Long id);
+
+
 }

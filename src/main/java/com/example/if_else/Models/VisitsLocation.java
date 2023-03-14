@@ -14,6 +14,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "visits_Locations")
+@Builder
 public class VisitsLocation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,5 +30,5 @@ public class VisitsLocation {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_time_of_visit_location_point")
     @NotNull
-    private Date dateTimeOfVisitLocationPoint;
+    private Date dateTimeOfVisitLocationPoint = new Date();
 }
