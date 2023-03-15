@@ -64,14 +64,14 @@ public class Animal {
     private  Account chipperId;
 
 
-    @OneToOne
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
     @JoinColumn(name = "chipping_location_id",
             referencedColumnName = "id")
     @NotNull
     private Location chippingLocationId;
 
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE})
+    @OneToMany( cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
     @JoinColumn(name = "visited_location_id",
             referencedColumnName = "id")
     @NotNull

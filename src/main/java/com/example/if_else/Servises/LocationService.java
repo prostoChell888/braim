@@ -2,7 +2,9 @@ package com.example.if_else.Servises;
 
 
 import com.example.if_else.Models.Account;
+import com.example.if_else.Models.Animal;
 import com.example.if_else.Models.Location;
+import com.example.if_else.Reposiories.AnimalRepository;
 import com.example.if_else.Reposiories.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class LocationService {
 
     private final LocationRepository locationRepository;
+    private final AnimalRepository animalRepository;
 
 
     public ResponseEntity<Location> getLacattionById(@Valid @Min(1) @NotNull Long pointId) {
@@ -52,7 +55,7 @@ public class LocationService {
 
         Optional<Location> optionalLocation = locationRepository.findById(accountId);
 
-        if (optionalLocation.isEmpty() ) {
+        if (optionalLocation.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
 
@@ -75,11 +78,16 @@ public class LocationService {
     public ResponseEntity<Location> deleteLocationById(@Valid @Min(1) @NotNull Long loacationId) {
         Optional<Location> optionalLocation = locationRepository.findById(loacationId);
 
-        if (optionalLocation.isEmpty() ) {
+        if (optionalLocation.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
-        locationRepository.deleteById(loacationId);
 
+        Optional<Animal> optionalAnimal = animalRepository.findByChippingLocationId(optionalLocation.get());
+
+        if (optionalAnimal.isPresent()) {
+            return ResponseEntity.status(400).body(null);
+        }
+        locationRepository.deleteById(loacationId);
         return ResponseEntity.ok().body(null);
     }
 }

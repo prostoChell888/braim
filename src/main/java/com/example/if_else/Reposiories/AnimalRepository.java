@@ -1,10 +1,14 @@
 package com.example.if_else.Reposiories;
 
+import com.example.if_else.Models.Account;
 import com.example.if_else.Models.Animal;
+import com.example.if_else.Models.Location;
 import com.example.if_else.enums.Gender;
 import com.example.if_else.enums.LifeStatus;
 import com.example.if_else.mapers.AnimalProjection;
+import com.example.if_else.mapers.VisitsLocationProjection;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -18,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecificationExecutor<AnimalProjection> {
+    List<Animal> findByChipperId(Account chipperId);
 
 
     @Query(
@@ -40,6 +45,13 @@ public interface AnimalRepository extends JpaRepository<Animal, Long>, JpaSpecif
             "FROM Animal an " +
             "WHERE an.id = :id")
     AnimalProjection getAnimalProjectionById( @Param("id") Long id);
+
+    @Query("SELECT an " +
+            "FROM Animal an " +
+            "WHERE an.id in :ids")
+    List<AnimalProjection> getAllById(@Param("ids")List<Long> listId);
+
+    Optional<Animal> findByChippingLocationId(Location location);
 
 
 }

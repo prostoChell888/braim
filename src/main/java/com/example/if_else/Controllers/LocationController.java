@@ -19,7 +19,13 @@ public class LocationController {
 
     @GetMapping("{pointId}")
     public ResponseEntity<Location> show(@PathVariable("pointId") Long pointId) {
-        return locationServic.getLacattionById(pointId);
+        try {
+            return locationServic.getLacattionById(pointId);
+
+        } catch (Exception e) {
+            System.out.println("rew");
+            throw e;
+        }
     }
 
     @PostMapping()

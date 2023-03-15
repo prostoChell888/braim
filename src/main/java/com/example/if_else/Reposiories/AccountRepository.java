@@ -17,6 +17,7 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Integer>, JpaSpecificationExecutor<Account> {
 
+
     @Override
     Optional<Account> findById(Integer id);
 

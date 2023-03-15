@@ -48,14 +48,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         //todo
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/registration").permitAll()
-                .antMatchers("/accounts/{accountId}").permitAll()
-                .antMatchers("/animals/{animalId}").permitAll()
-                .antMatchers("/animals/types/{typeId}").permitAll()
-                .antMatchers("/locations/{pointId}").permitAll()
-                .antMatchers("/animals/search").permitAll()
-                .antMatchers("/accounts/search").permitAll()
-                .antMatchers("/animals/{animalId}/locations").permitAll()
+                .antMatchers(HttpMethod.GET, "/accounts/{accountId}").permitAll()
+                .antMatchers(HttpMethod.GET, "/animals/{animalId}").permitAll()
+                .antMatchers(HttpMethod.GET, "/animals/types/{typeId}").permitAll()
+                .antMatchers(HttpMethod.GET, "/locations/{pointId}").permitAll()
+                .antMatchers(HttpMethod.GET, "/animals/search").permitAll()
+                .antMatchers(HttpMethod.GET, "/accounts/search").permitAll()
+                .antMatchers(HttpMethod.GET, "/animals/{animalId}/locations").permitAll()
+                .antMatchers(HttpMethod.POST, "/registration").not().authenticated()
                 .anyRequest().authenticated()
                 .and().httpBasic();
     }

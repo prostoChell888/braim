@@ -21,7 +21,6 @@ public class AnimalCreateParam {
 
 
     @NotNull
-    @Length(min = 1)
     @ValidElOfList
     private List<Long> animalTypes;
 
@@ -37,7 +36,6 @@ public class AnimalCreateParam {
     @NotNull
     private Gender gender;
 
-    @NotNull
     private LifeStatus lifeStatus;
 
     @Min(1)

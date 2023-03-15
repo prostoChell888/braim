@@ -41,6 +41,7 @@ public class AccountController {
     public ResponseEntity<Account> delete(@PathVariable("accountId") Integer accountId,
                                           Principal principal) {
 
+
         return accountService.deleteUserById(accountId,  principal.getName());
     }
 

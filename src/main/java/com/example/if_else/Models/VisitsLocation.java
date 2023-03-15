@@ -1,6 +1,7 @@
 package com.example.if_else.Models;
 
 
+import com.example.if_else.utils.IdInterface;
 import lombok.*;
 
 import javax.persistence.*;
@@ -15,7 +16,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Table(name = "visits_Locations")
 @Builder
-public class VisitsLocation {
+public class VisitsLocation implements IdInterface {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id", nullable = false)
@@ -24,11 +25,12 @@ public class VisitsLocation {
     @OneToOne
     @JoinColumn(name = "location_id",
             referencedColumnName = "id")
-    private Location location;
+    private Location locationInfo;
 
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "date_time_of_visit_location_point")
     @NotNull
+    @Builder.Default
     private Date dateTimeOfVisitLocationPoint = new Date();
 }

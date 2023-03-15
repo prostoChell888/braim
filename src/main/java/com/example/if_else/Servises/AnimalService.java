@@ -6,6 +6,7 @@ import com.example.if_else.Reposiories.*;
 import com.example.if_else.enums.LifeStatus;
 import com.example.if_else.mapers.AnimalProjection;
 import com.example.if_else.mapers.ChangeTypeDto;
+import com.example.if_else.mapers.VisitsLocationProjection;
 import com.example.if_else.request.LocationUpdateRequest;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
@@ -13,13 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.EntityManager;
-import javax.persistence.Query;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -32,8 +31,9 @@ import java.util.stream.Collectors;
 public class AnimalService {
 
     private final AnimalRepository animalRepository;
-    private final EntityManager entityManager;
 
+    private final EntityManager entityManager;
+    private final VisitLocationRepository visitLocationRepository;
     private final AnimalTypeRepository animalTypeRepository;
 
     private final AccountRepository accountRepository;
@@ -41,23 +41,23 @@ public class AnimalService {
     private final LocationRepository locationRepository;
     private final VisitsLocationRepository visitsLocationRepository;
 
-    public ResponseEntity<Animal> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
+    public ResponseEntity<AnimalProjection> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 
         if (animalId == null || animalId <= 0) {
             return ResponseEntity.status(400).body(null);
         }
 
         //todo вернуть проекцию, а не объект
-        Optional<Animal> account = animalRepository.findById(animalId);
+        AnimalProjection animal = animalRepository.getAnimalProjectionById(animalId);
 
-        if (account.isPresent()) {
-            return ResponseEntity.status(200).body(account.get());
+        if (animal != null) {
+            return ResponseEntity.status(200).body(animal);
         } else {
             return ResponseEntity.status(404).body(null);
         }
     }
 
-    public ResponseEntity<List<Animal>> findAnimals(@Valid AmimalSerchParameters param) {
+    public ResponseEntity<List<AnimalProjection>> findAnimals(@Valid AmimalSerchParameters param) {
 
 
         Page<Animal> animals = animalRepository.findAnimalByParams(
@@ -67,47 +67,34 @@ public class AnimalService {
                 param.getLifeStatus(),
                 param.getGender(),
                 PageRequest.of(param.getFrom(), param.getSize(), Sort.Direction.ASC, "id"));
+        List<AnimalProjection> animalProjections = animalRepository.getAllById(animals.getContent().stream().
+                map(Animal::getId)
+                .collect(Collectors.toList()));
 
-        return ResponseEntity.status(200).body(animals.getContent());
+
+        return ResponseEntity.status(200).body(animalProjections);
     }
 
 
-    public ResponseEntity<List<VisitsLocation>> getLocation(@Valid @Min(1) @NotNull Long animalId,
+    public ResponseEntity<List<VisitsLocationProjection>> getLocation(@Valid @Min(1) @NotNull Long animalId,
                                                             @Valid AmimalSerchParameters param) {
-
 
         Optional<Animal> animal = animalRepository.findById(animalId);
         if (animal.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
 
-        List<VisitsLocation> accounts = getVisitsLocations(animalId, param);
+        Page<VisitsLocationProjection> visitsLocations = visitLocationRepository.findLocatiombyParam(animalId,
+                param.getStartDateTime(),
+                param.getEndDateTime(),
+                PageRequest.of(param.getFrom(), param.getSize(), Sort.Direction.ASC, "id"));
+
+        List<VisitsLocationProjection> accounts = visitsLocations.getContent();
 
         return ResponseEntity.status(200).body(accounts);
     }
 
-    private List<VisitsLocation> getVisitsLocations(@Valid @Min(1) @NotNull Long animalId,
-                                                    @Valid AmimalSerchParameters param) {
-        Query query = entityManager.createQuery(
-                "SELECT visit " +
-                        "FROM Animal animal " +
-                        "JOIN animal.visitedLocations visit  " +
-                        "WHERE :animalId = animal.id " +
-                        "AND (:startDateTime is null or visit.dateTimeOfVisitLocationPoint >= :startDateTime) " +
-                        "AND (:endDateTime is null or visit.dateTimeOfVisitLocationPoint <= :endDateTime) ");
 
-        query.setParameter("animalId", animalId);
-        query.setParameter("startDateTime", param.getStartDateTime());
-        query.setParameter("endDateTime", param.getEndDateTime());
-        query.setFirstResult(param.getFrom());
-        query.setMaxResults(param.getSize());
-        List<VisitsLocation> accounts = query.getResultList();
-
-        //todo переделать на страницы
-        //animalRepository.findAll(PageRequest.of(0, 10));
-
-        return accounts;
-    }
 
     public ResponseEntity<AnimalProjection> createAnimal(@Valid AnimalCreateParam params) {
         // проверка наличия id аккаунта
@@ -196,7 +183,12 @@ public class AnimalService {
         Animal updatinAnimal = optionalAnimal.get();
 
         if (updatinAnimal.getVisitedLocations().size() > 0) {
-            return ResponseEntity.status(400).body(null);
+
+            System.out.println("ttyt" + animalId + " ===============================");
+            System.out.println("размер: " + updatinAnimal.getVisitedLocations().size());
+            ;
+
+            return ResponseEntity.status(400).body(optionalAnimal.get());
         }
         animalRepository.deleteById(animalId);
 
@@ -275,20 +267,20 @@ public class AnimalService {
         return ResponseEntity.status(200).body(animalProjection);
     }
 
-    public ResponseEntity<AnimalProjection> addLocateToAnimal(@Valid @Min(1) @NotNull Long animalId,
-                                                              @Valid @Min(1) @NotNull Long pointId) {
+    public ResponseEntity<VisitsLocationProjection> addLocateToAnimal(@Valid @Min(1) @NotNull Long animalId,
+                                                                      @Valid @Min(1) @NotNull Long pointId) {
 
         Optional<Location> locationOptional = locationRepository.findById(pointId);
-        if (locationOptional.isPresent()) {
+        if (locationOptional.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
 
         Optional<Animal> animalOptional = animalRepository.findById(animalId);
-        if (animalOptional.isPresent()) {
+        if (animalOptional.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
 
-        //todo вынести отдельнонет
+        //todo вынести отдельно
         Animal animal = animalOptional.get();
         if (animal.getLifeStatus().equals(LifeStatus.DEAD)) {
             return ResponseEntity.status(400).body(null);
@@ -299,14 +291,14 @@ public class AnimalService {
         }
 
         VisitsLocation visitsLocation = VisitsLocation.builder()
-                .location(locationOptional.get())
+                .locationInfo(locationOptional.get())
                 .build();
         animal.getVisitedLocations().add(visitsLocation);
 
-        animal = animalRepository.save(animal);
-        AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
+        visitsLocationRepository.save(visitsLocation);
+        VisitsLocationProjection anser = visitsLocationRepository.getVisitsLocationById(visitsLocation.getId());
 
-        return ResponseEntity.status(200).body(animalProjection);
+        return ResponseEntity.status(201).body(anser);
     }
 
     public ResponseEntity<AnimalProjection> changeLocateToAnimal(@Valid @Min(1) @NotNull Long animalId,
@@ -314,7 +306,7 @@ public class AnimalService {
 
 
         Optional<Location> locationOptional = locationRepository.findById(oldNewLacate.getLocationPointId());
-        if (locationOptional.isPresent()) {
+        if (locationOptional.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
 
@@ -329,7 +321,7 @@ public class AnimalService {
         }
 
         List<Long> listLacateId = animal.getVisitedLocations().stream()
-                .map(a -> a.getLocation().getId())
+                .map(a -> a.getLocationInfo().getId())
                 .collect(Collectors.toList());
 
         int indexOfChangPoint = listLacateId.indexOf(oldNewLacate.getLocationPointId());
@@ -348,7 +340,7 @@ public class AnimalService {
         }
         animal.getVisitedLocations()
                 .get(indexOfChangPoint)
-                .setLocation(locationOptional.get());
+                .setLocationInfo(locationOptional.get());
 
         animalRepository.save(animal);
         AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
@@ -371,7 +363,7 @@ public class AnimalService {
         VisitsLocation location = locationOptional.get();
 
         Animal animal = animalOptional.get();
-        if (!animal.getVisitedLocations().remove(location)){
+        if (!animal.getVisitedLocations().remove(location)) {
             return ResponseEntity.status(404).body(null);
         }
 

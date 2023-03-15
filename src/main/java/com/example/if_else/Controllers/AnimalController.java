@@ -6,7 +6,9 @@ import com.example.if_else.Models.VisitsLocation;
 import com.example.if_else.Servises.AnimalService;
 import com.example.if_else.mapers.AnimalProjection;
 import com.example.if_else.mapers.ChangeTypeDto;
+import com.example.if_else.mapers.VisitsLocationProjection;
 import com.example.if_else.request.LocationUpdateRequest;
+import com.example.if_else.utils.PojectionConverter;
 import com.example.if_else.utils.SerchingParametrs.AmimalSerchParameters;
 import com.example.if_else.utils.SerchingParametrs.AnimalCreateParam;
 import lombok.RequiredArgsConstructor;
@@ -25,22 +27,27 @@ public class AnimalController {
 
 
     @GetMapping("{animalId}")
-    public ResponseEntity<Animal> show(@PathVariable("animalId") Long animalId) {
+    public ResponseEntity<AnimalProjection> show(@PathVariable("animalId") Long animalId) {
         return animalService.getAnimalById(animalId);
     }
 
 
     @GetMapping("search")
-    public ResponseEntity<List<Animal>> findAnimals(AmimalSerchParameters parameters) {
+    public ResponseEntity<List<AnimalProjection>> findAnimals(AmimalSerchParameters parameters) {
 
         return animalService.findAnimals(parameters);
     }
 
-    //todo добавить проекции(переделать классы)
     @GetMapping("{animalId}/locations")
-    public ResponseEntity<List<VisitsLocation>> getLocation(@PathVariable("animalId") Long animalId,
+    public ResponseEntity<List<VisitsLocationProjection>> getLocation(@PathVariable("animalId") Long animalId,
                                                             AmimalSerchParameters param) {
-        return animalService.getLocation(animalId, param);
+        try{
+            return animalService.getLocation(animalId, param);
+
+        } catch (Exception e) {
+            System.out.println("tre");
+            throw e;
+        }
     }
 
     @PostMapping
@@ -81,27 +88,25 @@ public class AnimalController {
     }
 
 
-
     @PostMapping("{animalId}/locations/{pointId}")
-    public ResponseEntity<AnimalProjection> addLocateToAnimal(@PathVariable Long animalId,
-                                                              @PathVariable Long pointId) {
+    public ResponseEntity<VisitsLocationProjection> addLocateToAnimal(@PathVariable Long animalId,
+                                                                      @PathVariable Long pointId) {
         return animalService.addLocateToAnimal(animalId, pointId);
     }
 
 
-@PutMapping("{animalId}/locations/{pointId}")
-public ResponseEntity<AnimalProjection> changeLocateToAnimal(@PathVariable Long animalId,
-                                                             @RequestBody LocationUpdateRequest locationUpdateRequest) {
-    return animalService.changeLocateToAnimal(animalId, locationUpdateRequest);
-}
+    @PutMapping("{animalId}/locations/{pointId}")
+    public ResponseEntity<AnimalProjection> changeLocateToAnimal(@PathVariable Long animalId,
+                                                                 @RequestBody LocationUpdateRequest locationUpdateRequest) {
+        return animalService.changeLocateToAnimal(animalId, locationUpdateRequest);
+    }
 
 
-//    todo DELETE - /animals/{animalId}/locations/{visitedPointId}
     @DeleteMapping("/{animalId}/locations/{visitedPointId}")
     public ResponseEntity<Object> deleteLocateFromAnimal(@PathVariable Long animalId,
-                                                                   @PathVariable Long visitedPointId) {
+                                                         @PathVariable Long visitedPointId) {
 
-       return animalService.deleteLocateFromAnimal(animalId, visitedPointId);
+        return animalService.deleteLocateFromAnimal(animalId, visitedPointId);
 
     }
 }

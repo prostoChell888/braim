@@ -1,7 +1,9 @@
 package com.example.if_else.Servises;
 
+import com.example.if_else.Models.Animal;
 import com.example.if_else.Reposiories.AccountRepository;
 import com.example.if_else.Models.Account;
+import com.example.if_else.Reposiories.AnimalRepository;
 import com.example.if_else.security.UserDetailsPrincipal;
 import com.example.if_else.utils.SerchingParametrs.AcountSerchParametrs;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +29,7 @@ import java.util.Optional;
 public class AccountService implements UserDetailsService {
 //    private final EntityManager entityManager;
     private final AccountRepository accountRepository;
+    private final AnimalRepository animalRepository;
 
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
@@ -101,6 +104,10 @@ public class AccountService implements UserDetailsService {
             return ResponseEntity.status(403).body(null);
         }
 
+        List<Animal> animalsList = animalRepository.findByChipperId(optionalAccount.get());
+        if (animalsList.size() > 0) {
+            return ResponseEntity.status(400).body(null);
+        }
         accountRepository.deleteById(accountId);
 
         return ResponseEntity.ok().body(null);

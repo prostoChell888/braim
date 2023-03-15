@@ -12,6 +12,8 @@ import java.util.List;
 public class CapitalLetterValidator implements ConstraintValidator <ValidElOfList, List<Long>> {
     @Override
     public boolean isValid(List<Long> list, ConstraintValidatorContext context) {
-       return !list.contains(null) && list.stream().allMatch(el -> el > 0);
+       return list.size() > 0
+               && !list.contains(null)
+               && list.stream().allMatch(el -> el > 0);
     }
 }
