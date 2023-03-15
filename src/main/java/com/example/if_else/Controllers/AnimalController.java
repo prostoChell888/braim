@@ -45,7 +45,7 @@ public class AnimalController {
             return animalService.getLocation(animalId, param);
 
         } catch (Exception e) {
-            System.out.println("tre");
+            System.out.println(" 112233 ");
             throw e;
         }
     }
@@ -98,6 +98,7 @@ public class AnimalController {
     @PutMapping("{animalId}/locations/{pointId}")
     public ResponseEntity<AnimalProjection> changeLocateToAnimal(@PathVariable Long animalId,
                                                                  @RequestBody LocationUpdateRequest locationUpdateRequest) {
+
         return animalService.changeLocateToAnimal(animalId, locationUpdateRequest);
     }
 

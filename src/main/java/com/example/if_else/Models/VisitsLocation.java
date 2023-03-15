@@ -2,6 +2,7 @@ package com.example.if_else.Models;
 
 
 import com.example.if_else.utils.IdInterface;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,7 +26,7 @@ public class VisitsLocation implements IdInterface {
     @OneToOne
     @JoinColumn(name = "location_id",
             referencedColumnName = "id")
-    private Location locationInfo;
+    private Location locationPointId;
 
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -33,4 +34,10 @@ public class VisitsLocation implements IdInterface {
     @NotNull
     @Builder.Default
     private Date dateTimeOfVisitLocationPoint = new Date();
+
+    @ManyToOne
+    @JoinColumn(name = "animal_id")
+    @JsonIgnore
+    private Animal animal;
+
 }

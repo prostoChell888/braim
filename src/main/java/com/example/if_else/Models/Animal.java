@@ -28,8 +28,8 @@ public class Animal {
     @OneToMany(cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "animal_type_id",
             referencedColumnName = "id" )
-
-    private List<AnimalType> animalTypes;
+    @Builder.Default
+    private List<AnimalType> animalTypes = new ArrayList<>();
 
     @Column(name = "weight")
     private Float weight;

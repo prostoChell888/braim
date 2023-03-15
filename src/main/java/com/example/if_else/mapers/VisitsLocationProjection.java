@@ -5,12 +5,12 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
-@JsonPropertyOrder({ "id", "dateTimeOfVisitLocationPoint","location"})
+@JsonPropertyOrder({ "id", "dateTimeOfVisitLocationPoint","locationPointId"})
 public interface VisitsLocationProjection {
     Long getId();
 
-    @Value("#{target.locationInfo.getId()}")
-    Long getLocation();
+    @Value("#{target.locationInfo.id}")
+    Long getLocationPointId();
 
     Date getDateTimeOfVisitLocationPoint();
 

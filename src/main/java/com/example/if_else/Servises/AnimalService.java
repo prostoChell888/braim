@@ -39,7 +39,7 @@ public class AnimalService {
     private final AccountRepository accountRepository;
 
     private final LocationRepository locationRepository;
-    private final VisitsLocationRepository visitsLocationRepository;
+    private final VisitLocationRepository visitsLocationRepository;
 
     public ResponseEntity<AnimalProjection> getAnimalById(@Valid @Min(1) @NotNull Long animalId) {
 
@@ -84,7 +84,7 @@ public class AnimalService {
             return ResponseEntity.status(404).body(null);
         }
 
-        Page<VisitsLocationProjection> visitsLocations = visitLocationRepository.findLocatiombyParam(animalId,
+        Page<VisitsLocationProjection> visitsLocations = visitLocationRepository.findLocatiomByParam(animalId,
                 param.getStartDateTime(),
                 param.getEndDateTime(),
                 PageRequest.of(param.getFrom(), param.getSize(), Sort.Direction.ASC, "id"));
@@ -180,14 +180,9 @@ public class AnimalService {
         if (optionalAnimal.isEmpty()) {
             return ResponseEntity.status(404).body(null);
         }
-        Animal updatinAnimal = optionalAnimal.get();
+        Animal animal = optionalAnimal.get();
 
-        if (updatinAnimal.getVisitedLocations().size() > 0) {
-
-            System.out.println("ttyt" + animalId + " ===============================");
-            System.out.println("размер: " + updatinAnimal.getVisitedLocations().size());
-            ;
-
+        if (animal.getVisitedLocations().size() > 0) {
             return ResponseEntity.status(400).body(optionalAnimal.get());
         }
         animalRepository.deleteById(animalId);
@@ -236,7 +231,7 @@ public class AnimalService {
 
         AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animalId);
 
-        return ResponseEntity.status(201).body(animalProjection);
+        return ResponseEntity.status(200).body(animalProjection);
     }
 
     public ResponseEntity<AnimalProjection> changeTypeFromAnimal(@Valid @Min(1) @NotNull Long animalId,
@@ -291,7 +286,7 @@ public class AnimalService {
         }
 
         VisitsLocation visitsLocation = VisitsLocation.builder()
-                .locationInfo(locationOptional.get())
+                .locationPointId(locationOptional.get())
                 .build();
         animal.getVisitedLocations().add(visitsLocation);
 
@@ -321,7 +316,7 @@ public class AnimalService {
         }
 
         List<Long> listLacateId = animal.getVisitedLocations().stream()
-                .map(a -> a.getLocationInfo().getId())
+                .map(a -> a.getLocationPointId().getId())
                 .collect(Collectors.toList());
 
         int indexOfChangPoint = listLacateId.indexOf(oldNewLacate.getLocationPointId());
@@ -340,7 +335,7 @@ public class AnimalService {
         }
         animal.getVisitedLocations()
                 .get(indexOfChangPoint)
-                .setLocationInfo(locationOptional.get());
+                .setLocationPointId(locationOptional.get());
 
         animalRepository.save(animal);
         AnimalProjection animalProjection = animalRepository.getAnimalProjectionById(animal.getId());
