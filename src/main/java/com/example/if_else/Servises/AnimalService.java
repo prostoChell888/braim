@@ -182,9 +182,11 @@ public class AnimalService {
         }
         Animal animal = optionalAnimal.get();
 
-        if (animal.getVisitedLocations().size() > 0) {
+        if (!animal.getVisitedLocations().isEmpty()) {
             return ResponseEntity.status(400).body(optionalAnimal.get());
         }
+
+        animal.getAnimalTypes().clear();
         animalRepository.deleteById(animalId);
 
         return ResponseEntity.status(200).body(null);
